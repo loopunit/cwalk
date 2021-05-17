@@ -36,21 +36,13 @@ if(ENABLE_SANITIZER)
 endif()
 
 # add the main executable
-add_library(cwalk
-  "${INCLUDE_DIRECTORY}/cwalk.h"
-  "${SOURCE_DIRECTORY}/cwalk.cpp")
-enable_warnings(cwalk)
-target_include_directories(cwalk PUBLIC
+add_library(cwalk INTERFACE)
+target_include_directories(cwalk INTERFACE
   $<BUILD_INTERFACE:${INCLUDE_DIRECTORY}>
   $<INSTALL_INTERFACE:include>
 )
 set_target_properties(cwalk PROPERTIES PUBLIC_HEADER "${INCLUDE_DIRECTORY}/cwalk.h")
 set_target_properties(cwalk PROPERTIES DEFINE_SYMBOL CWK_EXPORTS)
-
-# add shared library macro
-if(BUILD_SHARED_LIBS)
-  target_compile_definitions(cwalk PUBLIC CWK_SHARED)
-endif()
 
 # enable tests
 if(ENABLE_TESTS)
