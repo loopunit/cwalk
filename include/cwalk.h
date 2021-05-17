@@ -49,7 +49,7 @@ struct cwk_dynamic
 {
   cwk_dynamic() = default;
   cwk_dynamic(cwk_path_style ps) : path_style{ps} {};
-  
+
 /**
  * We try to default to a different path style depending on the operating
  * system. So this should detect whether we should use windows or unix paths.
@@ -72,7 +72,7 @@ struct cwk_dynamic
    *
    * @param style The style which will be used from now on.
    */
-  void set_style(cwk_path_style style)
+  void set_style(cwk_path_style style) noexcept
   {
     // We can just set the global path style variable and then the behaviour for
     // all functions will change accordingly.
@@ -109,8 +109,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param buffer_size The size of the result buffer.
    * @return Returns the total amount of characters of the new absolute path.
    */
-  size_t get_absolute(
-    const char *base, const char *path, char *buffer, size_t buffer_size)
+  size_t get_absolute(const char *base, const char *path, char *buffer,
+    size_t buffer_size) const noexcept
   {
     size_t i;
     const char *paths[4];
@@ -164,7 +164,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @return Returns the total amount of characters of the full path.
    */
   size_t get_relative(const char *base_directory, const char *path,
-    char *buffer, size_t buffer_size)
+    char *buffer, size_t buffer_size) const noexcept
   {
     size_t pos, base_root_length, path_root_length;
     bool absolute, base_available, other_available, has_output;
@@ -287,8 +287,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param buffer_size The size of the result buffer.
    * @return Returns the total amount of characters of the full, combined path.
    */
-  size_t join(
-    const char *path_a, const char *path_b, char *buffer, size_t buffer_size)
+  size_t join(const char *path_a, const char *path_b, char *buffer,
+    size_t buffer_size) const noexcept
   {
     const char *paths[3];
 
@@ -321,7 +321,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param buffer_size The size of the result buffer.
    * @return Returns the total amount of characters of the full, combined path.
    */
-  size_t join_multiple(const char **paths, char *buffer, size_t buffer_size)
+  size_t join_multiple(
+    const char **paths, char *buffer, size_t buffer_size) const noexcept
   {
     // We can just call the internal join and normalize function for this one,
     // since it will handle everything.
@@ -338,7 +339,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param path The path which will be inspected.
    * @param length The output of the root length.
    */
-  void get_root(const char *path, size_t *length)
+  void get_root(const char *path, size_t *length) const noexcept
   {
     // We use a different implementation here based on the configuration of the
     // library.
@@ -366,8 +367,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * written to.
    * @return Returns the total amount of characters of the new path.
    */
-  size_t change_root(
-    const char *path, const char *new_root, char *buffer, size_t buffer_size)
+  size_t change_root(const char *path, const char *new_root, char *buffer,
+    size_t buffer_size) const noexcept
   {
     const char *tail;
     size_t root_length, path_length, tail_length, new_root_length,
@@ -409,7 +410,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param path The path which will be checked.
    * @return Returns true if the path is absolute or false otherwise.
    */
-  bool is_absolute(const char *path)
+  bool is_absolute(const char *path) const noexcept
   {
     size_t length;
 
@@ -430,7 +431,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param path The path which will be checked.
    * @return Returns true if the path is relative or false otherwise.
    */
-  bool is_relative(const char *path)
+  bool is_relative(const char *path) const noexcept
   {
     // The path is relative if it is not absolute.
     return !is_absolute(path);
@@ -450,7 +451,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param basename The output of the basename pointer.
    * @param length The output of the length of the basename.
    */
-  void get_basename(const char *path, const char **basename, size_t *length)
+  void get_basename(
+    const char *path, const char **basename, size_t *length) const noexcept
   {
     struct cwk_segment segment;
 
@@ -489,7 +491,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * not truncated.
    */
   size_t change_basename(const char *path, const char *new_basename,
-    char *buffer, size_t buffer_size)
+    char *buffer, size_t buffer_size) const noexcept
   {
     struct cwk_segment segment;
     size_t pos, root_size, new_basename_size;
@@ -548,7 +550,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param path The path which will be inspected.
    * @param length The length of the dirname.
    */
-  void get_dirname(const char *path, size_t *length)
+  void get_dirname(const char *path, size_t *length) const noexcept
   {
     struct cwk_segment segment;
 
@@ -580,7 +582,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param length The output of the length of the extension.
    * @return Returns true if an extension is found or false otherwise.
    */
-  bool get_extension(const char *path, const char **extension, size_t *length)
+  bool get_extension(
+    const char *path, const char **extension, size_t *length) const noexcept
   {
     struct cwk_segment segment;
     const char *c;
@@ -616,7 +619,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param path The path which will be inspected.
    * @return Returns true if the path has an extension or false otherwise.
    */
-  bool has_extension(const char *path)
+  bool has_extension(const char *path) const noexcept
   {
     const char *extension;
     size_t length;
@@ -647,7 +650,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * truncated.
    */
   size_t change_extension(const char *path, const char *new_extension,
-    char *buffer, size_t buffer_size)
+    char *buffer, size_t buffer_size) const noexcept
   {
     struct cwk_segment segment;
     const char *c, *old_extension;
@@ -739,7 +742,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @return The size which the complete normalized path has if it was not
    * truncated.
    */
-  size_t normalize(const char *path, char *buffer, size_t buffer_size)
+  size_t normalize(
+    const char *path, char *buffer, size_t buffer_size) const noexcept
   {
     const char *paths[2];
 
@@ -762,7 +766,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param path_other The other path which will compared with the base path.
    * @return Returns the number of characters which are common in the base path.
    */
-  size_t get_intersection(const char *path_base, const char *path_other)
+  size_t get_intersection(
+    const char *path_base, const char *path_other) const noexcept
   {
     bool absolute;
     size_t base_root_length, other_root_length;
@@ -841,7 +846,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param segment The segment which will be extracted.
    * @return Returns true if there is a segment or false if there is none.
    */
-  bool get_first_segment(const char *path, struct cwk_segment *segment)
+  bool get_first_segment(
+    const char *path, struct cwk_segment *segment) const noexcept
   {
     size_t length;
     const char *segments;
@@ -869,7 +875,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param segment The segment which will be extracted.
    * @return Returns true if there is a segment or false if there is none.
    */
-  bool get_last_segment(const char *path, struct cwk_segment *segment)
+  bool get_last_segment(
+    const char *path, struct cwk_segment *segment) const noexcept
   {
     // We first grab the first segment. This might be our last segment as well,
     // but we don't know yet. There is no last segment if there is no first
@@ -898,7 +905,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param segment The current segment which will be advanced to the next one.
    * @return Returns true if another segment was found or false otherwise.
    */
-  bool get_next_segment(struct cwk_segment *segment)
+  bool get_next_segment(struct cwk_segment *segment) const noexcept
   {
     const char *c;
 
@@ -947,7 +954,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @return Returns true if there is a segment before this one or false
    * otherwise.
    */
-  bool get_previous_segment(struct cwk_segment *segment)
+  bool get_previous_segment(struct cwk_segment *segment) const noexcept
   {
     const char *c;
 
@@ -991,7 +998,8 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param segment The segment which will be inspected.
    * @return Returns the type of the segment.
    */
-  cwk_segment_type get_segment_type(const struct cwk_segment *segment)
+  cwk_segment_type get_segment_type(
+    const struct cwk_segment *segment) const noexcept
   {
     // We just make a string comparison with the segment contents and return the
     // appropriate type.
@@ -1022,7 +1030,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * was not truncated.
    */
   size_t change_segment(struct cwk_segment *segment, const char *value,
-    char *buffer, size_t buffer_size)
+    char *buffer, size_t buffer_size) const noexcept
   {
     size_t pos, value_size, tail_size;
 
@@ -1085,7 +1093,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param symbol A pointer to a string.
    * @return Returns true if it is a separator, or false otherwise.
    */
-  bool is_separator(const char *str)
+  bool is_separator(const char *str) const noexcept
   {
     const char *c;
 
@@ -1112,7 +1120,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    * @param path The path which will be inspected.
    * @return Returns the style which is most likely used for the path.
    */
-  cwk_path_style guess_style(const char *path)
+  cwk_path_style guess_style(const char *path) const noexcept
   {
     const char *c;
     size_t root_length;
@@ -1173,7 +1181,7 @@ template <typename T_BASE> struct cwk_impl : T_BASE
    *
    * @return Returns the current path style configuration.
    */
-  cwk_path_style get_style(void)
+  cwk_path_style get_style(void) const noexcept
   {
     // Simply return the path style which we store in a global variable.
     return path_style;
@@ -1205,7 +1213,7 @@ private:
   };
 
   inline size_t output_sized(char *buffer, size_t buffer_size, size_t position,
-    const char *str, size_t length)
+    const char *str, size_t length) const noexcept
   {
     size_t amount_written;
 
@@ -1234,14 +1242,15 @@ private:
   }
 
   inline size_t output_current(
-    char *buffer, size_t buffer_size, size_t position)
+    char *buffer, size_t buffer_size, size_t position) const noexcept
   {
     // We output a "current" directory, which is a single character. This
     // character is currently not style dependant.
     return output_sized(buffer, buffer_size, position, ".", 1);
   }
 
-  inline size_t output_back(char *buffer, size_t buffer_size, size_t position)
+  inline size_t output_back(
+    char *buffer, size_t buffer_size, size_t position) const noexcept
   {
     // We output a "back" directory, which ahs two characters. This
     // character is currently not style dependant.
@@ -1249,22 +1258,23 @@ private:
   }
 
   inline size_t output_separator(
-    char *buffer, size_t buffer_size, size_t position)
+    char *buffer, size_t buffer_size, size_t position) const noexcept
   {
     // We output a separator, which is a single character.
     return output_sized(
       buffer, buffer_size, position, separators[path_style], 1);
   }
 
-  inline size_t output_dot(char *buffer, size_t buffer_size, size_t position)
+  inline size_t output_dot(
+    char *buffer, size_t buffer_size, size_t position) const noexcept
   {
     // We output a dot, which is a single character. This is used for
     // extensions.
     return output_sized(buffer, buffer_size, position, ".", 1);
   }
 
-  inline size_t output(
-    char *buffer, size_t buffer_size, size_t position, const char *str)
+  inline size_t output(char *buffer, size_t buffer_size, size_t position,
+    const char *str) const noexcept
   {
     size_t length;
 
@@ -1274,7 +1284,8 @@ private:
     return output_sized(buffer, buffer_size, position, str, length);
   }
 
-  inline void terminate_output(char *buffer, size_t buffer_size, size_t pos)
+  inline void terminate_output(
+    char *buffer, size_t buffer_size, size_t pos) const noexcept
   {
     if (buffer_size > 0) {
       if (pos >= buffer_size) {
@@ -1285,7 +1296,8 @@ private:
     }
   }
 
-  inline bool is_string_equal(const char *first, const char *second, size_t n)
+  inline bool is_string_equal(
+    const char *first, const char *second, size_t n) const noexcept
   {
     // If the path style is UNIX, we will compare case sensitively. This can be
     // done easily using strncmp.
@@ -1311,7 +1323,7 @@ private:
     return n == 0 || (*first == '\0' && *second == '\0');
   }
 
-  inline const char *find_next_stop(const char *c)
+  inline const char *find_next_stop(const char *c) const noexcept
   {
     // We just move forward until we find a '\0' or a separator, which will be
     // our next "stop".
@@ -1323,7 +1335,8 @@ private:
     return c;
   }
 
-  inline const char *find_previous_stop(const char *begin, const char *c)
+  inline const char *find_previous_stop(
+    const char *begin, const char *c) const noexcept
   {
     // We just move back until we find a separator or reach the beginning of the
     // path, which will be our previous "stop".
@@ -1340,8 +1353,8 @@ private:
     }
   }
 
-  inline bool get_first_segment_without_root(
-    const char *path, const char *segments, struct cwk_segment *segment)
+  inline bool get_first_segment_without_root(const char *path,
+    const char *segments, struct cwk_segment *segment) const noexcept
   {
     // Let's remember the path. We will move the path pointer afterwards, that's
     // why this has to be done first.
@@ -1384,7 +1397,7 @@ private:
   }
 
   inline bool get_last_segment_without_root(
-    const char *path, struct cwk_segment *segment)
+    const char *path, struct cwk_segment *segment) const noexcept
   {
     // Now this is fairly similar to the normal algorithm, however, it will
     // assume that there is no root in the path. So we grab the first segment at
@@ -1404,7 +1417,7 @@ private:
   }
 
   inline bool get_first_segment_joined(
-    const char **paths, struct cwk_segment_joined *sj)
+    const char **paths, struct cwk_segment_joined *sj) const noexcept
   {
     bool result;
 
@@ -1426,7 +1439,8 @@ private:
     return result;
   }
 
-  inline bool get_next_segment_joined(struct cwk_segment_joined *sj)
+  inline bool get_next_segment_joined(
+    struct cwk_segment_joined *sj) const noexcept
   {
     bool result;
 
@@ -1466,7 +1480,8 @@ private:
     return result;
   }
 
-  inline bool get_previous_segment_joined(struct cwk_segment_joined *sj)
+  inline bool get_previous_segment_joined(
+    struct cwk_segment_joined *sj) const noexcept
   {
     bool result;
 
@@ -1508,7 +1523,8 @@ private:
     return result;
   }
 
-  inline bool segment_back_will_be_removed(struct cwk_segment_joined *sj)
+  inline bool segment_back_will_be_removed(
+    struct cwk_segment_joined *sj) const noexcept
   {
     cwk_segment_type type;
     int counter;
@@ -1552,7 +1568,8 @@ private:
     return false;
   }
 
-  inline bool segment_normal_will_be_removed(struct cwk_segment_joined *sj)
+  inline bool segment_normal_will_be_removed(
+    struct cwk_segment_joined *sj) const noexcept
   {
     cwk_segment_type type;
     int counter;
@@ -1589,7 +1606,7 @@ private:
   }
 
   inline bool segment_will_be_removed(
-    const struct cwk_segment_joined *sj, bool absolute)
+    const struct cwk_segment_joined *sj, bool absolute) const noexcept
   {
     cwk_segment_type type;
     struct cwk_segment_joined sjc;
@@ -1612,7 +1629,7 @@ private:
   }
 
   inline bool segment_joined_skip_invisible(
-    struct cwk_segment_joined *sj, bool absolute)
+    struct cwk_segment_joined *sj, bool absolute) const noexcept
   {
     while (segment_will_be_removed(sj, absolute)) {
       if (!get_next_segment_joined(sj)) {
@@ -1623,7 +1640,7 @@ private:
     return true;
   }
 
-  inline void get_root_windows(const char *path, size_t *length)
+  inline void get_root_windows(const char *path, size_t *length) const noexcept
   {
     const char *c;
     bool is_device_path;
@@ -1708,7 +1725,7 @@ private:
     }
   }
 
-  inline void get_root_unix(const char *path, size_t *length)
+  inline void get_root_unix(const char *path, size_t *length) const noexcept
   {
     // The slash of the unix path represents the root. There is no root if there
     // is no slash.
@@ -1719,7 +1736,7 @@ private:
     }
   }
 
-  inline bool is_root_absolute(const char *path, size_t length)
+  inline bool is_root_absolute(const char *path, size_t length) const noexcept
   {
     // This is definitely not absolute if there is no root.
     if (length == 0) {
@@ -1732,7 +1749,7 @@ private:
   }
 
   inline size_t join_and_normalize_multiple(
-    const char **paths, char *buffer, size_t buffer_size)
+    const char **paths, char *buffer, size_t buffer_size) const noexcept
   {
     size_t pos;
     bool absolute, has_segment_output;
@@ -1807,7 +1824,7 @@ private:
 
   inline void skip_segments_until_diverge(struct cwk_segment_joined *bsj,
     struct cwk_segment_joined *osj, bool absolute, bool *base_available,
-    bool *other_available)
+    bool *other_available) const noexcept
   {
     // Now looping over all segments until they start to diverge. A path may
     // diverge if two segments are not equal or if one path reaches the end.
