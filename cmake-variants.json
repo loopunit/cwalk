@@ -1,0 +1,44 @@
+{
+    "build_type": {
+        "default": "debug",
+        "description": "The CMake build type to use",
+        "choices": {
+            "debug": {
+                "short": "Debug",
+                "long": "Debug",
+                "buildType": "Debug",
+                "settings": {
+                    "ENABLE_TESTS" : "true"
+                }
+            },
+            "release": {
+                "short": "Release",
+                "long": "Release",
+                "buildType": "Release",
+                "settings": {
+                    "ENABLE_TESTS" : "true"
+                }
+            }
+        }
+    },
+    "platform": {
+        "default": "win32",
+        "description": "Selects the type of platform to build for",
+        "choices": {
+            "win32": {
+                "short": "Windows",
+                "long": "Windows",
+                "settings": {
+                    "ENABLE_TESTS" : "true"
+                }
+            },
+            "darwin": {
+                "short": "MacOS",
+                "long": "MacOS",
+                "settings": {
+                    "ENABLE_TESTS" : "true"
+                }
+            }
+        }
+    }    
+}

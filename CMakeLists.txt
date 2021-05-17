@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.9.2)
 project(cwalk
   VERSION 1.2.5
   DESCRIPTION "A simple path library"
-  LANGUAGES C)
+  LANGUAGES CXX)
 
 # include utilities
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -14,7 +14,7 @@ include(CreateTestList)
 include(CMakePackageConfigHelpers)
 
 # configure requirements
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 
 # setup target and directory names
 set(INCLUDE_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include")
@@ -24,21 +24,21 @@ set(TEST_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/test")
 # enable coverage if requested
 if(ENABLE_COVERAGE)
   message("-- Coverage enabled")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
+  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 endif()
 
 # enable sanitizer
 if(ENABLE_SANITIZER)
   message("-- Sanitizer enabled")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=${ENABLE_SANITIZER}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=${ENABLE_SANITIZER}")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=${ENABLE_SANITIZER}")
 endif()
 
 # add the main executable
 add_library(cwalk
   "${INCLUDE_DIRECTORY}/cwalk.h"
-  "${SOURCE_DIRECTORY}/cwalk.c")
+  "${SOURCE_DIRECTORY}/cwalk.cpp")
 enable_warnings(cwalk)
 target_include_directories(cwalk PUBLIC
   $<BUILD_INTERFACE:${INCLUDE_DIRECTORY}>
@@ -236,21 +236,21 @@ if(ENABLE_TESTS)
   write_test_file(DEFAULT "${TEST_DIRECTORY}/tests.h")
 
   add_executable(cwalktest
-    "${TEST_DIRECTORY}/main.c"
-    "${TEST_DIRECTORY}/absolute_test.c"
-    "${TEST_DIRECTORY}/basename_test.c"
-    "${TEST_DIRECTORY}/dirname_test.c"
-    "${TEST_DIRECTORY}/extension_test.c"
-    "${TEST_DIRECTORY}/guess_test.c"
-    "${TEST_DIRECTORY}/intersection_test.c"
-    "${TEST_DIRECTORY}/is_absolute_test.c"
-    "${TEST_DIRECTORY}/is_relative_test.c"
-    "${TEST_DIRECTORY}/join_test.c"
-    "${TEST_DIRECTORY}/normalize_test.c"
-    "${TEST_DIRECTORY}/relative_test.c"
-    "${TEST_DIRECTORY}/root_test.c"
-    "${TEST_DIRECTORY}/segment_test.c"
-    "${TEST_DIRECTORY}/windows_test.c")
+    "${TEST_DIRECTORY}/main.cpp"
+    "${TEST_DIRECTORY}/absolute_test.cpp"
+    "${TEST_DIRECTORY}/basename_test.cpp"
+    "${TEST_DIRECTORY}/dirname_test.cpp"
+    "${TEST_DIRECTORY}/extension_test.cpp"
+    "${TEST_DIRECTORY}/guess_test.cpp"
+    "${TEST_DIRECTORY}/intersection_test.cpp"
+    "${TEST_DIRECTORY}/is_absolute_test.cpp"
+    "${TEST_DIRECTORY}/is_relative_test.cpp"
+    "${TEST_DIRECTORY}/join_test.cpp"
+    "${TEST_DIRECTORY}/normalize_test.cpp"
+    "${TEST_DIRECTORY}/relative_test.cpp"
+    "${TEST_DIRECTORY}/root_test.cpp"
+    "${TEST_DIRECTORY}/segment_test.cpp"
+    "${TEST_DIRECTORY}/windows_test.cpp")
   enable_warnings(cwalktest)
     
   target_link_libraries(cwalktest PRIVATE cwalk)
